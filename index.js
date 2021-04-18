@@ -30,7 +30,6 @@ app.use(express.static(path.join(__dirname,'public')));
 //que tome el puerto asignado por el servicio SI NO que le asigne el puerto 3000
 app.set('port',process.env.PORT || 3000);
 
-
 app.listen(app.get('port') ,()=>{
     console.log('EL SERVIDOR'+app.get('port'));
     // console.log(path.join(__dirname,'public'));
