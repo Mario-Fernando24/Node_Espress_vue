@@ -1,9 +1,13 @@
 //para configurar el servidor express
 
 //hacemos una constante y llamamos al modulo express
-const express=require('express');
-const morgan=require('morgan');
-const cors=require('cors');
+
+import express from 'express';
+//const express=require('express');
+import morgan from 'morgan';
+//const morgan=require('morgan');
+import cors from 'cors';
+//const cors=require('cors');
 
 //declaramos un objeto que va hacer una instancia a express
 const app=express();
