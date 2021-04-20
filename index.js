@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import cors from 'cors';
 import path from 'path';
 import mongoose from 'mongoose';
+//importo las rutas
+import router from './routes';
 
 
 mongoose.Promise=global.Promise;
@@ -26,7 +28,8 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 //ruta publica de inicio
 app.use(express.static(path.join(__dirname,'public')));
-
+//rutas
+app.use('/api',router);
 //que tome el puerto asignado por el servicio SI NO que le asigne el puerto 3000
 app.set('port',process.env.PORT || 3000);
 

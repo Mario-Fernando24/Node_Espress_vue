@@ -1,5 +1,4 @@
 import Categoria from './categoria';
-
-export default{
+export default {
     Categoria
 }

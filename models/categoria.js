@@ -1,14 +1,12 @@
-import mongoose,{Shema} from 'mongoose';
+import mongoose,{Schema} from 'mongoose';
 
-//crear nuestro esquema como un esquema
-const categoriaShema = new Shema({
-
-    nombre:{type:String,maxlength:50,unique:true,required:true},
-    descripcion:{type:String,maxlength:255},
-    estado:{type:number,default:1},
+const categoriaSchema = new Schema({
+    nombre:{type:String, maxlength:50,unique:true,required:true},
+    descripcion: {type:String,maxlength:255},
+    estado: {type:Number,default:1},
     createdAt:{type:Date,default:Date.now}
 });
- 
-//convertir que mogoose lo convierta a un modelo
-const Categoria =mongoose.model('categoria',categoriaShema);
+
+const Categoria = mongoose.model('categoria',categoriaSchema);
+
 export default Categoria;

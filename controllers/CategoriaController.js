@@ -1,4 +1,3 @@
-import { query } from 'express';
 import models from '../models';
 
 //para poder exportar funciones, objetos, clases etc
@@ -7,22 +6,16 @@ export default {
     //1: solicitud http a la funcion de middlewares
     //2: respuesta 3: devolucion de llamada
     //agregar  
-    add: async (req,res, next)=>{
-        
+    add: async (req,res,next) =>{
         try {
-
-            const reg=await models.Categoria.create(req.body);
-            //si todo se ejetuca correctamente
+            const reg = await models.Categoria.create(req.body);
             res.status(200).json(reg);
-        } catch (e) {
-            //si no envio un error 500 en un array
-            res.status(500).send({
-               message:'ocurrio un error'
+        } catch (e){
+            res.status(400).send({
+                message:'Ocurrió un esrror'
             });
             next(e);
-
         }
-        
     },
     //consultar
     query:  async (req,res, next)=>{
@@ -49,10 +42,13 @@ export default {
         }
         
     },
-    //listaar
+    //listaar todas las categorias
     list: async (req,res, next)=>{
-
-        const reg= await models.Categoria.find({});
+        //el dato que se va a buscar  "RegExp" esto es como el like en mysql
+        let valor=req.query.valor;
+     //el metodo find espera dos parametros 1busqueda 2 propiedades filtradas
+        const reg= await models.Categoria.find({ $or:[{'nombre':new RegExp(valor,'i')}, {'descripcion':new RegExp(valor,'i')}]},{createdAt:0})
+        .sort({'createdAt':-1});
         res.status(200).json(reg);
 
         try {
@@ -81,21 +77,18 @@ export default {
         }
         
     },
-    remove:  async (req,res, next)=>{
 
+    remove: async (req,res,next) => {
         try {
-
+            
             const reg = await models.Categoria.findByIdAndDelete({_id:req.body._id});
             res.status(200).json(reg);
-            
-        } catch (e) {
-            //si no envio un error 500 en un array
+        } catch(e){
             res.status(500).send({
-                message:'ocurrio un error'
-             });
-             next(e);
+                message:'Ocurrió un error'
+            });
+            next(e);
         }
-        
     },
     activate: async (req,res, next)=>{
 
