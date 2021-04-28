@@ -1,5 +1,6 @@
 import models from '../models';
 import bcrypt from 'bcryptjs';
+import token from '../services/token';
 //para poder exportar funciones, objetos, clases etc
 export default {
     //funciones asincrona y recibe por 3 parametro
@@ -148,7 +149,10 @@ export default {
               //comparo la contraseña que viene del body con el de la consulta del user
             let match= await bcrypt.compare(req.body.password,user.password);
             if(match){
-                res.json('el usuario es correcto');
+
+                let tokenReturn = await token.encode(user._id);
+                res.status(200).json({user,tokenReturn});
+
             }else{
                 res.status(404).send({
                     message:'La contraseña es invalida'
