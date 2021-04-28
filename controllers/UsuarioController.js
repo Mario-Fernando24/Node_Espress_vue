@@ -137,5 +137,40 @@ export default {
         }
         
     },
+
+    login: async (req,res, next)=>{
+
+       try{
+
+        let user = await models.Usuario.findOne({email:req.body.email});
+
+        if(user){
+              //comparo la contraseña que viene del body con el de la consulta del user
+            let match= await bcrypt.compare(req.body.password,user.password);
+            if(match){
+                res.json('el usuario es correcto');
+            }else{
+                res.status(404).send({
+                    message:'La contraseña es invalida'
+                });
+                next(e);
+            }
+
+        }else{
+            res.status(404).send({
+                message:'El usuario no existe en nuestro registro'
+             });
+             next(e);
+        }
+
+            
+        } catch (e) {
+            res.status(500).send({
+                message:'ocurrio algun error en el login'
+             });
+             next(e);
+        }
+    }
+
     
 }
