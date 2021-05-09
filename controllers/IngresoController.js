@@ -1,12 +1,35 @@
 import models from '../models';
 
+        async function aumentarStock(idarticulo, cantidad){
+            //hago una consulta para saber el stock de ese articulo que recibo por parametro
+            let {stock}= await models.Articulo.findOne({_id:idarticulo});  
+            //declaro una variable nStock y le asigno el stock que me trajo de la consulta de ese articulo + la cantidad que estoy recibiendo por parametro
+            let nStock=parseInt(stock)+parseInt(cantidad);
+            //una ves actualizo el stock de ese articulo
+            const reg = await models.Articulo.findByIdAndUpdate({_id:idarticulo},{stock:nStock});
+        }
+
+        async function disminuirStock(idarticulo, cantidad){
+            //hago una consulta para saber el stock de ese articulo que recibo por parametro
+            let {stock}= await models.Articulo.findOne({_id:idarticulo});  
+            //declaro una variable nStock y le asigno el stock que me trajo de la consulta de ese articulo + la cantidad que estoy recibiendo por parametro
+            let nStock=parseInt(stock)-parseInt(cantidad);
+            //una ves actualizo el stock de ese articulo
+            const reg = await models.Articulo.findByIdAndUpdate({_id:idarticulo},{stock:nStock});
+        }
 
 //para poder exportar funciones, objetos, clases etc
-export default {
+export default { 
    
     add: async (req,res,next) =>{
         try {
             const reg = await models.Ingreso.create(req.body);
+            //llamo a la funcion
+            let detalles=req.body.detalles;
+            //voy a enviarle un array
+            detalles.map(function(x){
+               aumentarStock(x._id,x.cantidad);
+            });
             res.status(200).json(reg);
         } catch (e){
             res.status(400).send({
@@ -70,6 +93,12 @@ export default {
         try {
 
             const reg= await models.Ingreso.findByIdAndUpdate({_id:req.body._id},{estado:1});
+              //llamo a la funcion
+              let detalles=reg.detalles;
+              //voy a enviarle un array
+              detalles.map(function(x){
+                 aumentarStock(x._id,x.cantidad);
+              });
             res.status(200).json(reg);
             
         } catch (e) {
@@ -88,6 +117,14 @@ export default {
         try {
 
             const reg= await models.Ingreso.findByIdAndUpdate({_id:req.body._id},{estado:0});
+          
+            //llamo a la funcion
+            let detalles=reg.detalles;
+            //voy a enviarle un array
+            detalles.map(function(x){
+                disminuirStock(x._id,x.cantidad);
+            });
+            
             res.status(200).json(reg);
             
         } catch (e) {
