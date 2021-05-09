@@ -43,6 +43,7 @@ export default {
     },
     //listaar todas las categorias
     list: async (req,res, next)=>{
+         
         //el dato que se va a buscar  "RegExp" esto es como el like en mysql
         let valor=req.query.valor;
      //el metodo find espera dos parametros 1busqueda 2 propiedades filtradas
@@ -64,10 +65,14 @@ export default {
 
 
     listCliente: async (req,res, next)=>{
+
+        
         //el dato que se va a buscar  "RegExp" esto es como el like en mysql
         let valor=req.query.valor;
+
+        
      //el metodo find espera dos parametros 1busqueda 2 propiedades filtradas y busco a todos las personas que el tipo es cliente
-        const reg= await models.Persona.find({ $or:[{'nombre':new RegExp(valor,'i')}, {'num_documento':new RegExp(valor,'i')}],'tipo_documento':'Cliente'},{createdAt:0})
+        const reg= await models.Persona.find({ $or:[{'nombre':new RegExp(valor,'i')}, {'num_documento':new RegExp(valor,'i')}],'tipo_persona':'Cliente'},{createdAt:0})
         .sort({'createdAt':-1});
         res.status(200).json(reg);
 
@@ -87,7 +92,7 @@ export default {
         //el dato que se va a buscar  "RegExp" esto es como el like en mysql
         let valor=req.query.valor;
      //el metodo find espera dos parametros 1busqueda 2 propiedades filtradas y busco a todos las personas que el tipo es Proveedor
-        const reg= await models.Persona.find({ $or:[{'nombre':new RegExp(valor,'i')}, {'num_documento':new RegExp(valor,'i')}],'tipo_documento':'Proveedor'},{createdAt:0})
+        const reg= await models.Persona.find({ $or:[{'nombre':new RegExp(valor,'i')}, {'num_documento':new RegExp(valor,'i')}],'tipo_persona':'Proveedor'},{createdAt:0})
         .sort({'createdAt':-1});
         res.status(200).json(reg);
 
@@ -132,7 +137,7 @@ export default {
     remove: async (req,res,next) => {
         try {
             
-            const reg = await models.Usuario.findByIdAndDelete({_id:req.body._id});
+            const reg = await models.Persona.findByIdAndDelete({_id:req.body._id});
             res.status(200).json(reg);
         } catch(e){
             res.status(500).send({
@@ -145,7 +150,7 @@ export default {
 
         try {
 
-            const reg= await models.Usuario.findByIdAndUpdate({_id:req.body._id},{estado:1});
+            const reg= await models.Persona.findByIdAndUpdate({_id:req.body._id},{estado:1});
             res.status(200).json(reg);
             
         } catch (e) {
@@ -163,7 +168,7 @@ export default {
 
         try {
 
-            const reg= await models.Usuario.findByIdAndUpdate({_id:req.body._id},{estado:0});
+            const reg= await models.Persona.findByIdAndUpdate({_id:req.body._id},{estado:0});
             res.status(200).json(reg);
             
         } catch (e) {
@@ -174,43 +179,6 @@ export default {
              next(e);
         }
         
-    },
-
-    login: async (req,res, next)=>{
-
-       try{
-
-        let user = await models.Usuario.findOne({email:req.body.email,estado:1});
-
-        if(user){
-              //comparo la contraseña que viene del body con el de la consulta del user
-            let match= await bcrypt.compare(req.body.password,user.password);
-            if(match){
-
-                let tokenReturn = await token.encode(user._id);
-                res.status(200).json({user,tokenReturn});
-
-            }else{
-                res.status(404).send({
-                    message:'La contraseña es incorrecta'
-                });
-                next(e);
-            }
-
-        }else{
-            res.status(404).send({
-                message:'El usuario no existe en nuestro registro'
-             });
-             next(e);
-        }
-
-            
-        } catch (e) {
-            res.status(500).send({
-                message:'ocurrio algun error en el login'
-             });
-             next(e);
-        }
     }
 
     
