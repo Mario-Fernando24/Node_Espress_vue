@@ -143,7 +143,7 @@ export default {
 
        try{
 
-        let user = await models.Usuario.findOne({email:req.body.email});
+        let user = await models.Usuario.findOne({email:req.body.email,estado:1});
 
         if(user){
               //comparo la contraseña que viene del body con el de la consulta del user
@@ -155,7 +155,7 @@ export default {
 
             }else{
                 res.status(404).send({
-                    message:'La contraseña es invalida'
+                    message:'La contraseña es incorrecta'
                 });
                 next(e);
             }
