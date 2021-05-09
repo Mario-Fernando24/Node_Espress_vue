@@ -3,6 +3,7 @@ import Articulo from './articulo';
 import Usuario from './usuario';
 import Persona from './persona';
 import Ingreso from './ingreso';
+import Venta from './ventas';
 
 
 export default {
@@ -10,5 +11,5 @@ export default {
     Articulo,
     Usuario,
     Persona,
-    Ingreso
+    Venta
 }
