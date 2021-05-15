@@ -95,5 +95,41 @@ export default {
             });
             next(e);
         }
+    },
+    graficaVentaUltimos12Meses: async (req,res,next)=>{
+        
+        try {
+            const reg = await models.Venta.aggregate([
+                //obtener el total de las ventas
+                {
+                    $group:{
+                        //agrupo por mes y año y escojo el id
+                         _id:{
+                             mes:{$month:"$createdAt"},
+                             year:{$year:"$createdAt"}
+                         },
+                         //le sumo todo el total
+                         total:{$sum:"$total"},
+                         //sumando de uno en uno
+                         numero:{$sum:1}
+                    }
+                },
+                //agrupar las ventas por el mes
+                {
+                 $sort:{
+                     //voy a ordenar por el año de manera descendente
+                     "_id.year":-1,"_id.mes":-1
+                 }
+                }
+            ]).limit(12);
+            
+            res.status(200).json(reg);
+        } catch(e){
+            res.status(500).send({
+                message:'Ocurrió un error'
+            });
+            next(e);
+        }
+    
     }
 }

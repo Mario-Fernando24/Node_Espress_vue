@@ -11,5 +11,7 @@ export default {
     Articulo,
     Usuario,
     Persona,
-    Venta
+    Venta,
+    Ingreso
+
 }

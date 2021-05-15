@@ -33,7 +33,7 @@ export default {
             res.status(200).json(reg);
         } catch (e){
             res.status(400).send({
-                message:'Ocurrió un esrror'
+                message:'Ocurrió un error'
             });
             next(e);
         }
@@ -65,28 +65,46 @@ export default {
         }
         
     },
-    //listaar todas las categorias
-    list: async (req,res, next)=>{
-        //el dato que se va a buscar  "RegExp" esto es como el like en mysql
-        let valor=req.query.valor;
-     //el metodo find espera dos parametros 1busqueda 2 propiedades filtradas
-        const reg= await models.Ingreso.find({ $or:[{'num_comprobate':new RegExp(valor,'i')}, {'serie_comprobante':new RegExp(valor,'i')}]},{createdAt:0})
-        .populate('usuario',{nombre:1})
-        .populate('persona',{nombre:1})
-        .sort({'createdAt':-1});
-        res.status(200).json(reg);
 
+    // list: async (req,res,next) => {
+    //     try {
+    //         let valor=req.query.valor;
+    //         const reg=await models.Ingreso.find({$or:[{'num_comprobante':new RegExp(valor,'i')},{'serie_comprobante':new RegExp(valor,'i')}]})
+    //         .populate('usuario',{nombre:1})
+    //         .populate('persona',{nombre:1})
+    //         .sort({'createdAt':-1});
+
+
+    //         res.status(200).json(reg);
+    //     } catch(e){
+    //         res.status(500).send({
+    //             message:'Ocurrió un error'
+    //         });
+    //         next(e);
+    //     }
+    // },
+
+    list: async (req,res,next) => {
         try {
-            
-        } catch (e) {
-            //si no envio un error 500 en un array
+            let valor=req.query.valor;
+            const reg=await models.Ingreso.find({$or:[{'num_comprobante':new RegExp(valor,'i')},{'serie_comprobante':new RegExp(valor,'i')}]},{createdAt:0})
+            .populate('usuario',{nombre:1})
+            .populate('persona',{nombre:1})
+            .sort({'createdAt':-1});
+            res.status(200).json(reg);
+        } catch(e){
             res.status(500).send({
-                message:'ocurrio un error'
-             });
-             next(e);
+                message:'Ocurrió un error'
+            });
+            next(e);
         }
-        
     },
+
+
+
+
+
+    
     
     activate: async (req,res, next)=>{
 
@@ -136,5 +154,41 @@ export default {
         }
         
     },
+
+    graficaIngresoUltimos12Meses: async (req,res,next)=>{
+        
+        try {
+            const reg = await models.Ingreso.aggregate([
+                //obtener el total de las ventas
+                {
+                    $group:{
+                        //agrupo por mes y año y escojo el id
+                         _id:{
+                             mes:{$month:"$createdAt"},
+                             year:{$year:"$createdAt"}
+                         },
+                         //le sumo todo el total
+                         total:{$sum:"$total"},
+                         //sumando de uno en uno
+                         numero:{$sum:1}
+                    }
+                },
+                //agrupar las ventas por el mes
+                {
+                 $sort:{
+                     //voy a ordenar por el año de manera descendente
+                     "_id.year":-1,"_id.mes":-1
+                 }
+                }
+            ]).limit(12);
+            
+            res.status(200).json(reg);
+        } catch(e){
+            res.status(500).send({
+                message:'Ocurrió un error'
+            });
+            next(e);
+        }
     
+    }
 }
