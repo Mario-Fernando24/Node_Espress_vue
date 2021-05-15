@@ -13,5 +13,6 @@ router.get('/list',auth.verifyVendedor,ventaController.list);
 router.put('/activate',auth.verifyVendedor,ventaController.activate);
 router.put('/deactivate',auth.verifyVendedor,ventaController.deactivate);
 router.get('/graficaUltimos',auth.verifyUsuario,ventaController.graficaVentaUltimos12Meses);
+router.get('/consultarFechasVenta',auth.verifyUsuario,ventaController.consultarFechasVenta);
 
 export default router;

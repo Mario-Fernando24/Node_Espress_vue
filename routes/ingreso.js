@@ -13,5 +13,6 @@ router.get('/list',auth.verifyAlmacenero,ingresoController.list);
 router.put('/activate',auth.verifyAlmacenero,ingresoController.activate);
 router.put('/deactivate',auth.verifyAlmacenero,ingresoController.desactivate);
 router.get('/graficaUltimosIngreso',auth.verifyUsuario,ingresoController.graficaIngresoUltimos12Meses);
+router.get('/consultarFechasIngreso',auth.verifyUsuario,ingresoController.consultarFechasIngreso);
 
 export default router;
